@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "729410226670",
+    "project_id": "log-in-5473d",
+    "storage_bucket": "log-in-5473d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729410226670:android:dc83902bd9c2b2914ee6ff",
+        "android_client_info": {
+          "package_name": "com.example.metronom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFk_wZHvYbZJGkKVI2UTP7N_hXEFO6OPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
