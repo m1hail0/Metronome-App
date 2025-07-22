@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.metronom.R
 
 class SongPresetRVAdapter(private var itemList: List<SongPreset>) : RecyclerView.Adapter<SongPresetRVViewHolder>(){
+    val listener: (()->Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongPresetRVViewHolder {
         return SongPresetRVViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.preset_rw_layout,parent,false))
     }

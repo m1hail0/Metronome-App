@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
@@ -25,8 +26,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.ArrayDeque
+import java.util.Deque
+import java.util.Queue
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
+import kotlin.time.TimeSource.Monotonic.markNow
 
-
+class LimitDeque<Long>(private val limitSize: Int): ArrayDeque<Long>(){
+    override fun push(p0: Long) {
+        if (this.size >= limitSize) pollLast()
+        super.push(p0)
+    }
+}
 class MetronomeActivity : AppCompatActivity() {
 
     //Job promenljive za pustanje klika i vizuelnog prikazivanja tempa
@@ -36,10 +49,19 @@ class MetronomeActivity : AppCompatActivity() {
     //Lista ID-eva od bpm View elemenata
     private val idViewList: MutableList<Int> = mutableListOf()
 
+
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Vaša logika za "back" dugme
+                onBackPressedDispatcher.onBackPressed()
+                loopJob?.cancel()
+            }
+        })
 
         setContentView(R.layout.metronom)
 
@@ -49,15 +71,20 @@ class MetronomeActivity : AppCompatActivity() {
         val btnMinusOne = findViewById<ImageButton>(R.id.minus_button)
         val btnPlusOne = findViewById<ImageButton>(R.id.plus_button)
         val btnSongPreset = findViewById<Button>(R.id.song_preset_button)
+        val btnTapBpm = findViewById<Button>(R.id.tapButton)
         val songName = findViewById<TextView>(R.id.song_name_text_view)
         val bandName = findViewById<TextView>(R.id.band_name_text_view)
         val spinner = findViewById<Spinner>(R.id.time_signature_spinner)
 
+
         var tempo: Int
 
         val tempos = resources.getStringArray(R.array.timeSignatures)
-        val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,tempos)
+        val adapter = ArrayAdapter(this,R.layout.spinner_list,tempos)
+        adapter.setDropDownViewResource(R.layout.spinner_list)
+
         spinner.adapter = adapter
+        spinner.setSelection(3)
 
         tempo = tempos[3].toInt()
         Log.i("spinner","posle tempo: $tempo")
@@ -75,7 +102,7 @@ class MetronomeActivity : AppCompatActivity() {
 
         seekBar.progress = bpmEditText.text.toString().toInt()
 
-        spinner.setSelection(3)
+
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(
@@ -92,6 +119,7 @@ class MetronomeActivity : AppCompatActivity() {
             }
 
         })
+
 
         bpmEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
@@ -131,6 +159,9 @@ class MetronomeActivity : AppCompatActivity() {
                 loopJob = CoroutineScope(Dispatchers.Default).launch{
                     while (isPlaying){
                         for(i in 0..<idViewList.size) {
+                            //Sprecava crash ukoliko je novi uneseni broj tokom rada manji od prethodnog :)
+                            if(i>=idViewList.size)
+                                break
                             val size = idViewList.size
                             mediaPlayer.start()
                             Log.i("brojac","i:$i---size:$size")
@@ -161,6 +192,42 @@ class MetronomeActivity : AppCompatActivity() {
         btnSongPreset.setOnClickListener{
             val i = Intent(this@MetronomeActivity, SongPresetActivity::class.java)
             startActivity(i)
+            loopJob?.cancel()
+            finish()
+        }
+
+//      Prvo mereno vreme
+        var firstTimeMark: ValueTimeMark? = null
+        var elapsedDuration: Duration?
+
+        var durationSum: Long = 0
+        var durationAverage: Double = 0.0
+
+        var finalBpm: Int
+
+        val durationDeque: Deque<Long> = LimitDeque(4)
+        btnTapBpm.setOnClickListener{
+
+            if (firstTimeMark == null) {
+                firstTimeMark = markNow()
+            }
+            else {
+                elapsedDuration = firstTimeMark!!.elapsedNow()
+                durationDeque.push(elapsedDuration!!.toLong(DurationUnit.MILLISECONDS))
+                durationSum = 0
+                for (elem in durationDeque)
+                {
+                    durationSum += elem
+                }
+//                Prosek izmedju 4 klika
+                if(durationDeque.size == 4) {
+
+                    durationAverage = durationSum.toDouble() / 4
+                    finalBpm = (1000/durationAverage*60).toInt()
+                    seekBar.progress = finalBpm
+                }
+            }
+            firstTimeMark = markNow()
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
@@ -184,6 +251,10 @@ class MetronomeActivity : AppCompatActivity() {
 
     }
 
+    private fun tapAverage(queue: Queue<Long> ): Int {
+        val avg: Double = queue.toList().average()
+        return (avg/1000).toInt()
+    }
 
 
     private fun getIntervalInMilliseconds(seekBar: SeekBar): Long{
@@ -255,4 +326,10 @@ class MetronomeActivity : AppCompatActivity() {
     private fun Int.dpToPx(): Int {
         return (this * Resources.getSystem().displayMetrics.density).toInt()
     }
+
+//    private fun tapBpmButton(btn: Button, queue: Queue<TimeSource.Monotonic.ValueTimeMark>) {
+//         val timeSource: TimeSource.Monotonic
+//         val mark = timeSource.markNow()
+//         queue.add()
+//    }
 }

@@ -10,7 +10,7 @@ import com.example.metronom.MetronomeActivity
 import com.example.metronom.R
 import com.example.metronom.SongPresetActivity
 
-class SongPresetRVViewHolder(view: View) : RecyclerView.ViewHolder(view){
+class SongPresetRVViewHolder(view: View, private val listener: (()->Unit)? = null) : RecyclerView.ViewHolder(view){
 
     fun bind(item: SongPreset){
         val songName = itemView.findViewById<TextView>(R.id.song_name_text)
@@ -27,11 +27,8 @@ class SongPresetRVViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val name = item.songName
         val band = item.bandName
         val bpm = item.bpmCount
-        itemView.setOnClickListener(){
-            val intent = Intent(itemView.context, SongPresetActivity::class.java)
-            intent.putExtra("key_data", name)
-            itemView.context.startActivity(intent)
-        }
+        
+
 
         btnChoose.setOnClickListener{
             val intent = Intent(itemView.context, MetronomeActivity::class.java)
@@ -40,7 +37,7 @@ class SongPresetRVViewHolder(view: View) : RecyclerView.ViewHolder(view){
             intent.putExtra("bpm", bpm)
 
             itemView.context.startActivity(intent)
-            (itemView.context as Activity).finish()
+            listener?.invoke()
         }
     }
 }

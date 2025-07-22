@@ -67,10 +67,14 @@
         android:id="@+id/time_signature_spinner"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        app:layout_constraintBottom_toTopOf="@id/bpmSeekBar"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@drawable/plus_minus_button_background"
+        android:spinnerMode="dropdown"
         android:layout_marginStart="20dp"
-        android:spinnerMode="dropdown" />
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/bpmSeekBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+
+        />
 
     <android.widget.Button
         android:id="@+id/song_preset_button"
@@ -114,6 +118,7 @@
         android:layout_width="150dp"
         android:layout_height="60dp"
         android:layout_marginStart="10dp"
+        android:contentDescription="Minus one"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/arrow_left"
@@ -126,6 +131,7 @@
         android:layout_width="150dp"
         android:layout_height="60dp"
         android:layout_marginEnd="10dp"
+        android:contentDescription="Plus one"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:src="@drawable/arrow_right"
