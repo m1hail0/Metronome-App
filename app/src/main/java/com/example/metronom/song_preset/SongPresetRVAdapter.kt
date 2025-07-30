@@ -9,7 +9,7 @@ class SongPresetRVAdapter(private var itemList: List<SongPreset>) : RecyclerView
     val listener: (()->Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongPresetRVViewHolder {
-        return SongPresetRVViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.preset_rw_layout,parent,false))
+        return SongPresetRVViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.preset_rv_layout,parent,false))
     }
 
     override fun getItemCount()= itemList.size

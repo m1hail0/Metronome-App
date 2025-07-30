@@ -22,6 +22,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -33,6 +34,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 import kotlin.time.TimeSource.Monotonic.markNow
+
 
 class LimitDeque<Long>(private val limitSize: Int): ArrayDeque<Long>(){
     override fun push(p0: Long) {
@@ -50,9 +52,11 @@ class MetronomeActivity : AppCompatActivity() {
     private val idViewList: MutableList<Int> = mutableListOf()
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
 
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -74,27 +78,42 @@ class MetronomeActivity : AppCompatActivity() {
         val btnTapBpm = findViewById<Button>(R.id.tapButton)
         val songName = findViewById<TextView>(R.id.song_name_text_view)
         val bandName = findViewById<TextView>(R.id.band_name_text_view)
-        val spinner = findViewById<Spinner>(R.id.time_signature_spinner)
+        val timeSignatureSpinner = findViewById<Spinner>(R.id.time_signature_spinner)
 
+        var timeSignature: Int
 
-        var tempo: Int
-
-        val tempos = resources.getStringArray(R.array.timeSignatures)
-        val adapter = ArrayAdapter(this,R.layout.spinner_list,tempos)
+        val timeSignatureArray = resources.getStringArray(R.array.timeSignatures)
+        val adapter = ArrayAdapter(this,R.layout.spinner_list,timeSignatureArray)
         adapter.setDropDownViewResource(R.layout.spinner_list)
 
-        spinner.adapter = adapter
-        spinner.setSelection(3)
+        timeSignatureSpinner.adapter = adapter
+        timeSignatureSpinner.setSelection(3)
 
-        tempo = tempos[3].toInt()
-        Log.i("spinner","posle tempo: $tempo")
-        addViews(tempo)
+
 
         //Dodeljivanje podataka iz RecyclerViewa
-        songName.text = intent.getStringExtra("song_name") ?: "Custom"
-        bandName.text = intent.getStringExtra("band_name") ?: "/"
+        songName.text = intent.getStringExtra("song_name") ?: "none"
+        bandName.text = intent.getStringExtra("band_name") ?: "none"
         val bpm = intent.getIntExtra("bpm",120)
         bpmEditText.setText(bpm.toString())
+
+
+        //Dodeljivanje time_signature vrednosti spinneru iz RecyclerViewa
+        val timeSignatureString: String = intent.getStringExtra("time_signature") ?: "3"
+        if(timeSignatureString!="3" && timeSignatureString.contains("/")){
+            //Potencijalna greska ako se dobije vrednost manje od 0, ali ne bi nikako trebalo to da se desi. Update:dodao sam else
+            timeSignature = ((timeSignatureString.subSequence(0, timeSignatureString.indexOf("/"))).toString().toInt() - 1)
+        }else if(timeSignatureString=="3"){
+            //Ako nema prosledjene vrednosti timeSignature ce dobiti default vrednost 4 (pod indeksom 3)
+            timeSignature = timeSignatureArray[timeSignatureString.toInt()].toInt()
+        }else{
+            timeSignature = 0
+        }
+
+        Log.i("spinner","posle timeSignature: $timeSignature")
+        addViews(timeSignature)
+
+
 
 
         val mediaPlayer = MediaPlayer.create(this, R.raw.click)
@@ -230,7 +249,7 @@ class MetronomeActivity : AppCompatActivity() {
             firstTimeMark = markNow()
         }
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
+        timeSignatureSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
         {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -239,8 +258,8 @@ class MetronomeActivity : AppCompatActivity() {
                 id: Long
             ) {
                 idViewList.clear()
-                tempo = tempos[position].toInt()
-                addViews(tempo)
+                timeSignature = timeSignatureArray[position].toInt()
+                addViews(timeSignature)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

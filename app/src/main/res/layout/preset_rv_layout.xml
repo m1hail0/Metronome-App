@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="20dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/rv_background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/title_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/choose_button">
+
+        <TextView
+            android:id="@+id/song_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Laid to rest"
+            android:textColor="@color/lightPurple"
+            android:textColorHint="@color/lightPurple"
+            android:textSize="30sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/time_signature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="4/4"
+            android:textSize="16sp"
+            android:textColorHint="@color/lightPurple"
+            android:textColor="@color/lightPurple"
+            app:layout_constraintTop_toBottomOf="@id/song_name_text"
+            app:layout_constraintBottom_toTopOf="@id/band_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/band_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Lamb of God"
+            android:textColor="@color/lightPurple"
+            android:textColorHint="@color/lightPurple"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/bpm_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="60sp"
+        android:hint="120"
+        android:textColor="@color/lightPurple"
+        android:textColorHint="@color/lightPurple"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/choose_button"
+        />
+
+
+    <android.widget.Button
+        android:id="@+id/choose_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="Choose"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textAllCaps="false"
+        android:background="@drawable/button_light_purple"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
