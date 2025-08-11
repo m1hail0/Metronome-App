@@ -23,6 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Laid to rest"
+            android:fontFamily="serif"
+
             android:textColor="@color/lightPurple"
             android:textColorHint="@color/lightPurple"
             android:textSize="30sp"
@@ -34,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="4/4"
+            android:fontFamily="serif"
             android:textSize="16sp"
             android:textColorHint="@color/lightPurple"
             android:textColor="@color/lightPurple"
@@ -51,6 +54,8 @@
             android:textColorHint="@color/lightPurple"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:fontFamily="serif"
+
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -61,6 +66,9 @@
         android:layout_height="wrap_content"
         android:textSize="60sp"
         android:hint="120"
+        android:gravity="end"
+
+        android:fontFamily="serif"
         android:textColor="@color/lightPurple"
         android:textColorHint="@color/lightPurple"
         app:layout_constraintRight_toRightOf="parent"
@@ -75,7 +83,9 @@
         android:paddingHorizontal="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="Choose"
+        android:fontFamily="serif"
+        android:textAlignment="center"
+        android:text="@string/Choose"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textAllCaps="false"

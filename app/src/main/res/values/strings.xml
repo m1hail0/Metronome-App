@@ -2,6 +2,8 @@
     <string name="app_name">Metronom</string>
     <string name="_60">60</string>
     <string name="song">Song</string>
+    <string name="Choose">CHOOSE</string>
+    <string name="user_account_management">User account management</string>
     <string-array name="timeSignatures">
         <item>1</item>
         <item>2</item>

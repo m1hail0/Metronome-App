@@ -16,11 +16,10 @@
         android:theme="@style/Theme.Metronom"
         tools:targetApi="31">
         <activity
-            android:name=".SongPresetActivity"
-            android:exported="true"
-            android:noHistory="true"/>
+            android:name=".song_preset.SongPresetActivity"
+            android:exported="true"/>
         <activity
-            android:name=".LogInActivity"
+            android:name=".logInAndRegister.LogInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,8 +29,10 @@
         </activity>
         <activity android:name=".MetronomeActivity"
             android:exported="true"
-            android:noHistory="true"
             />
+        <activity android:name=".logInAndRegister.RegisterActivity"
+            android:exported="true"
+            android:noHistory="true"/>
 
     </application>
 
